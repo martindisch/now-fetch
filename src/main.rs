@@ -1,11 +1,11 @@
 use eyre::{Result, WrapErr};
 use quick_xml::de;
 use std::path::Path;
-use std::{fs, io, path::PathBuf};
+use std::{convert::TryInto, fs, io, path::PathBuf};
 
 mod table;
 
-use table::Table;
+use table::{Expression, Table};
 
 fn main() -> Result<()> {
     let files = get_files()?;
@@ -14,7 +14,11 @@ fn main() -> Result<()> {
         let content = get_cleaned_content(&file)?;
         let parsed_table: Table =
             de::from_str(&content).wrap_err("Could not deserialize HTML")?;
-        println!("{:#?}", parsed_table);
+        let expressions: Vec<Expression> = parsed_table
+            .try_into()
+            .wrap_err("Could not convert HTML table")?;
+
+        println!("{:#?}", expressions);
     }
 
     Ok(())
