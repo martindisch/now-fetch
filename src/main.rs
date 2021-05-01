@@ -1,7 +1,15 @@
 use eyre::{Result, WrapErr};
-use std::{fs, io};
+use std::{fs, io, path::PathBuf};
 
 fn main() -> Result<()> {
+    let files = get_files()?;
+
+    println!("{:?}", files);
+    Ok(())
+}
+
+/// Returns the sorted list of files in `data/input/`.
+fn get_files() -> Result<Vec<PathBuf>> {
     let mut files = fs::read_dir("data/input/")
         .wrap_err("Could not read input files")?
         .map(|res| res.map(|e| e.path()))
@@ -9,6 +17,5 @@ fn main() -> Result<()> {
         .wrap_err("Could not map entries to paths")?;
     files.sort();
 
-    println!("{:?}", files);
-    Ok(())
+    Ok(files)
 }
