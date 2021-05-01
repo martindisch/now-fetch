@@ -8,10 +8,12 @@ mod table;
 use table::{Expression, Table};
 
 fn main() -> Result<()> {
-    let files = get_files()?;
+    let files = get_files()
+        .wrap_err("Could not read files in data/input/ directory")?;
 
     for file in files {
-        let content = get_cleaned_content(&file)?;
+        let content =
+            get_cleaned_content(&file).wrap_err("Could not read file")?;
         let parsed_table: Table =
             de::from_str(&content).wrap_err("Could not deserialize HTML")?;
         let expressions: Vec<Expression> = parsed_table
