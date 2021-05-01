@@ -10,11 +10,23 @@ pub struct Table {
 #[derive(Debug, Deserialize)]
 pub struct Row {
     #[serde(rename = "td")]
-    data_cells: Option<Vec<Cell>>,
+    data_cells:
+        Option<(TextCell, AudioCell, TextCell, TextCell, TextCell, TextCell)>,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Cell {
+pub struct TextCell {
     #[serde(rename = "$value")]
     body: Option<Vec<String>>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct AudioCell {
+    audio: Audio,
+    a: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Audio {
+    src: String,
 }
