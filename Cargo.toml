@@ -6,3 +6,5 @@ edition = "2018"
 
 [dependencies]
 eyre = "0.6.5"
+serde = { version = "1.0.125", features = [ "derive" ] }
+quick-xml = { version = "0.22.0", features = [ "serialize" ] }

@@ -1,10 +1,22 @@
 use eyre::{Result, WrapErr};
+use quick_xml::de;
+use std::path::Path;
 use std::{fs, io, path::PathBuf};
+
+mod table;
+
+use table::Table;
 
 fn main() -> Result<()> {
     let files = get_files()?;
 
-    println!("{:?}", files);
+    for file in files {
+        let content = get_cleaned_content(&file)?;
+        let parsed_table: Table =
+            de::from_str(&content).wrap_err("Could not deserialize HTML")?;
+        println!("{:#?}", parsed_table);
+    }
+
     Ok(())
 }
 
@@ -18,4 +30,14 @@ fn get_files() -> Result<Vec<PathBuf>> {
     files.sort();
 
     Ok(files)
+}
+
+/// Reads the file and removes no-break spaces (deserializer can't handle
+/// them).
+fn get_cleaned_content(file: &Path) -> Result<String> {
+    let original_content =
+        fs::read_to_string(file).wrap_err("Could not read file")?;
+    let cleaned_content = str::replace(&original_content, "&nbsp;", "");
+
+    Ok(cleaned_content)
 }
