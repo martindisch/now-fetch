@@ -1,5 +1,5 @@
 use eyre::eyre;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 
 #[derive(Debug, Deserialize)]
@@ -48,7 +48,7 @@ pub struct Audio {
     src: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Expression {
     prefix: Option<String>,
     word: String,
