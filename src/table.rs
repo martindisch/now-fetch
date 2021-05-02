@@ -93,7 +93,6 @@ impl TryFrom<Table> for Vec<Expression> {
 pub struct Flashcard {
     pub front: String,
     pub back: String,
-    pub sound: String,
 }
 
 impl TryFrom<Expression> for Flashcard {
@@ -101,8 +100,15 @@ impl TryFrom<Expression> for Flashcard {
 
     fn try_from(expression: Expression) -> Result<Self, Self::Error> {
         let has_prefix = expression.prefix.is_some();
+        let sound_file = expression
+            .audio
+            .path_segments()
+            .ok_or_else(|| eyre!("URL does not contain file"))?
+            .last()
+            .ok_or_else(|| eyre!("No last element in iterator"))?;
+
         let back = format!(
-            "<p>{}{}{}</p><p>{}</p><p>{}</p>",
+            "<p>{}{}{}</p><p>{}</p><p>{}</p>{}",
             expression.prefix.unwrap_or_else(|| String::from("")),
             if has_prefix {
                 String::from(" ")
@@ -111,20 +117,13 @@ impl TryFrom<Expression> for Flashcard {
             },
             expression.word,
             expression.transcription.unwrap_or_else(|| String::from("")),
-            expression.inflection.unwrap_or_else(|| String::from(""))
+            expression.inflection.unwrap_or_else(|| String::from("")),
+            format!("[sound:{}]", sound_file)
         );
-
-        let sound_file = expression
-            .audio
-            .path_segments()
-            .ok_or_else(|| eyre!("URL does not contain file"))?
-            .last()
-            .ok_or_else(|| eyre!("No last element in iterator"))?;
 
         Ok(Self {
             front: expression.english,
             back,
-            sound: format!("[sound:{}]", sound_file),
         })
     }
 }
