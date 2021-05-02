@@ -51,12 +51,12 @@ pub struct Audio {
 
 #[derive(Debug)]
 pub struct Expression {
-    prefix: Option<String>,
-    word: String,
-    transcription: String,
-    inflection: Option<String>,
-    english: String,
-    audio: Url,
+    pub prefix: Option<String>,
+    pub word: String,
+    pub transcription: String,
+    pub inflection: Option<String>,
+    pub english: String,
+    pub audio: Url,
 }
 
 impl From<DataCells> for Expression {
@@ -91,9 +91,9 @@ impl TryFrom<Table> for Vec<Expression> {
 
 #[derive(Debug, Serialize)]
 pub struct Flashcard {
-    front: String,
-    back: String,
-    sound: String,
+    pub front: String,
+    pub back: String,
+    pub sound: String,
 }
 
 impl TryFrom<Expression> for Flashcard {
