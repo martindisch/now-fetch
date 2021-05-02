@@ -48,7 +48,7 @@ pub struct Audio {
     src: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct Expression {
     prefix: Option<String>,
     word: String,
@@ -85,5 +85,36 @@ impl TryFrom<Table> for Vec<Expression> {
                 })
             })
             .collect()
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct Flashcard {
+    front: String,
+    back: String,
+    sound: String,
+}
+
+impl From<Expression> for Flashcard {
+    fn from(expression: Expression) -> Self {
+        let has_prefix = expression.prefix.is_some();
+        let back = format!(
+            "{}{}{}<br>{}<br>{}",
+            expression.prefix.unwrap_or_else(|| String::from("")),
+            if has_prefix {
+                String::from(" ")
+            } else {
+                String::from("")
+            },
+            expression.word,
+            expression.transcription,
+            expression.inflection.unwrap_or_else(|| String::from(""))
+        );
+
+        Self {
+            front: expression.english,
+            back,
+            sound: expression.audio,
+        }
     }
 }

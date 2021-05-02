@@ -10,7 +10,7 @@ use std::{
 
 mod table;
 
-use table::{Expression, Table};
+use table::{Expression, Flashcard, Table};
 
 fn main() -> Result<()> {
     let files = get_files()
@@ -21,12 +21,16 @@ fn main() -> Result<()> {
             get_cleaned_content(&file).wrap_err("Could not read file")?;
         let parsed_table: Table =
             de::from_str(&content).wrap_err("Could not deserialize HTML")?;
+
         let expressions: Vec<Expression> = parsed_table
             .try_into()
             .wrap_err("Could not convert HTML table")?;
+        let flashcards: Vec<Flashcard> =
+            expressions.into_iter().map(Flashcard::from).collect();
+
         let output_path = get_csv_output_path(&file)
             .wrap_err("Could not build output path")?;
-        write_csv(&expressions, &output_path)
+        write_csv(&flashcards, &output_path)
             .wrap_err("Could not write CSV file")?;
     }
 
@@ -67,8 +71,8 @@ fn get_csv_output_path(input: &Path) -> Result<PathBuf> {
     Ok(PathBuf::from(format!("data/output/{}.csv", file_stem)))
 }
 
-/// Writes the expressions to a semicolon-separated CSV file at the given path.
-fn write_csv(expressions: &[Expression], path: &Path) -> Result<()> {
+/// Writes the flashcards to a semicolon-separated CSV file at the given path.
+fn write_csv(flashcards: &[Flashcard], path: &Path) -> Result<()> {
     let file = File::create(path)
         .wrap_err("Could not create file in data/output/ directory")?;
     let mut writer = csv::WriterBuilder::new()
@@ -76,10 +80,10 @@ fn write_csv(expressions: &[Expression], path: &Path) -> Result<()> {
         .delimiter(b';')
         .from_writer(file);
 
-    for expression in expressions {
+    for flashcard in flashcards {
         writer
-            .serialize(expression)
-            .wrap_err("Could not serialize expression")?;
+            .serialize(flashcard)
+            .wrap_err("Could not serialize flashcard")?;
     }
 
     writer.flush().wrap_err("Could not flush CSV file")?;
