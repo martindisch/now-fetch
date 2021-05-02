@@ -24,7 +24,7 @@ fn main() -> Result<()> {
         let content =
             get_cleaned_content(&file).wrap_err("Could not read file")?;
         let parsed_table: Table =
-            de::from_str(&content).wrap_err("Could not deserialize HTML")?;
+            de::from_str(&content).wrap_err("Could not deserialize HTML. If it was file 08, delete the chocolate entry.")?;
 
         let expressions: Vec<Expression> = parsed_table
             .try_into()
