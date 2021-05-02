@@ -99,7 +99,7 @@ impl From<Expression> for Flashcard {
     fn from(expression: Expression) -> Self {
         let has_prefix = expression.prefix.is_some();
         let back = format!(
-            "{}{}{}<br>{}<br>{}",
+            "<p>{}{}{}</p><p>{}</p><p>{}</p>",
             expression.prefix.unwrap_or_else(|| String::from("")),
             if has_prefix {
                 String::from(" ")
