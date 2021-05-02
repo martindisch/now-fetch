@@ -1,6 +1,7 @@
 use eyre::eyre;
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
+use url::Url;
 
 #[derive(Debug, Deserialize)]
 #[serde(rename = "tbody")]
@@ -45,7 +46,7 @@ pub struct AudioCell {
 
 #[derive(Debug, Deserialize)]
 pub struct Audio {
-    src: String,
+    src: Url,
 }
 
 #[derive(Debug)]
@@ -55,7 +56,7 @@ pub struct Expression {
     transcription: String,
     inflection: Option<String>,
     english: String,
-    audio: String,
+    audio: Url,
 }
 
 impl From<DataCells> for Expression {
@@ -114,7 +115,7 @@ impl From<Expression> for Flashcard {
         Self {
             front: expression.english,
             back,
-            sound: expression.audio,
+            sound: expression.audio.to_string(),
         }
     }
 }

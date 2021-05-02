@@ -6,6 +6,7 @@ applies to:
 - serde
 - quick-xml, Copyright (c) 2016 Johann Tuffe
 - csv, Copyright (c) 2015 Andrew Gallant
+- url, Copyright (c) 2013-2016 The rust-url developers
 -------------------------------------------------------------------------------
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +32,7 @@ The Apache License
 applies to:
 - eyre
 - serde
+- url
 -------------------------------------------------------------------------------
                                  Apache License
                            Version 2.0, January 2004
