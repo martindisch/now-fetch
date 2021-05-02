@@ -20,7 +20,7 @@ pub struct Row {
 pub struct DataCells(
     OptionalTextCell,
     AudioCell,
-    TextCell,
+    OptionalTextCell,
     OptionalTextCell,
     TextCell,
     OptionalTextCell,
@@ -53,7 +53,7 @@ pub struct Audio {
 pub struct Expression {
     pub prefix: Option<String>,
     pub word: String,
-    pub transcription: String,
+    pub transcription: Option<String>,
     pub inflection: Option<String>,
     pub english: String,
     pub audio: Url,
@@ -110,7 +110,7 @@ impl TryFrom<Expression> for Flashcard {
                 String::from("")
             },
             expression.word,
-            expression.transcription,
+            expression.transcription.unwrap_or_else(|| String::from("")),
             expression.inflection.unwrap_or_else(|| String::from(""))
         );
 
