@@ -96,8 +96,10 @@ pub struct Flashcard {
     sound: String,
 }
 
-impl From<Expression> for Flashcard {
-    fn from(expression: Expression) -> Self {
+impl TryFrom<Expression> for Flashcard {
+    type Error = eyre::Report;
+
+    fn try_from(expression: Expression) -> Result<Self, Self::Error> {
         let has_prefix = expression.prefix.is_some();
         let back = format!(
             "<p>{}{}{}</p><p>{}</p><p>{}</p>",
@@ -112,10 +114,17 @@ impl From<Expression> for Flashcard {
             expression.inflection.unwrap_or_else(|| String::from(""))
         );
 
-        Self {
+        let sound_file = expression
+            .audio
+            .path_segments()
+            .ok_or_else(|| eyre!("URL does not contain file"))?
+            .last()
+            .ok_or_else(|| eyre!("No last element in iterator"))?;
+
+        Ok(Self {
             front: expression.english,
             back,
-            sound: expression.audio.to_string(),
-        }
+            sound: format!("[sound:{}]", sound_file),
+        })
     }
 }

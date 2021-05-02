@@ -2,7 +2,7 @@ use eyre::{eyre, Result, WrapErr};
 use quick_xml::de;
 use std::path::Path;
 use std::{
-    convert::TryInto,
+    convert::{TryFrom, TryInto},
     fs::{self, File},
     io,
     path::PathBuf,
@@ -25,8 +25,11 @@ fn main() -> Result<()> {
         let expressions: Vec<Expression> = parsed_table
             .try_into()
             .wrap_err("Could not convert HTML table")?;
-        let flashcards: Vec<Flashcard> =
-            expressions.into_iter().map(Flashcard::from).collect();
+        let flashcards = expressions
+            .into_iter()
+            .map(Flashcard::try_from)
+            .collect::<Result<Vec<_>>>()
+            .wrap_err("Could not convert expression to flashcard")?;
 
         let output_path = get_csv_output_path(&file)
             .wrap_err("Could not build output path")?;
