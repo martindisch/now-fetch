@@ -20,6 +20,7 @@ fn main() -> Result<()> {
         .wrap_err("Could not create output directories")?;
 
     for file in files {
+        println!("Working on {:?}", file);
         let content =
             get_cleaned_content(&file).wrap_err("Could not read file")?;
         let parsed_table: Table =
