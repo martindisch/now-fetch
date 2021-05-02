@@ -61,12 +61,18 @@ pub struct Expression {
 
 impl From<DataCells> for Expression {
     fn from(data_cells: DataCells) -> Self {
+        let english = if data_cells.4.body == "proper name" {
+            data_cells.1.a.clone()
+        } else {
+            data_cells.4.body
+        };
+
         Self {
             prefix: data_cells.0.body,
             word: data_cells.1.a,
             transcription: data_cells.2.body,
             inflection: data_cells.3.body,
-            english: data_cells.4.body,
+            english,
             audio: data_cells.1.audio.src,
         }
     }
